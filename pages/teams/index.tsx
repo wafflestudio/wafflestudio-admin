@@ -4,19 +4,18 @@ import axios from 'axios';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Table } from 'semantic-ui-react';
-import styled from 'styled-components';
 
-import { TEAM_LIST_SHEET_KEY } from '../../constants/google-spreadsheet';
 import type { GoogleSheetResponse } from '../../types/GoogleSheetResponse';
 
 interface Props {
-  data: GoogleSheetResponse;
+  teamList: GoogleSheetResponse;
+  memberList: GoogleSheetResponse;
 }
 
-const HIDE_COLUMN_LIST = [0, 4];
+const HIDE_COLUMN_LIST = [0, 1, 4];
 const MULTILINE_COLUMN_LIST = [5, 9];
 
-const TeamsPage: NextPage<Props> = ({ data }) => {
+const TeamsPage: NextPage<Props> = ({ teamList, memberList }) => {
   const router = useRouter();
 
   const renderCell = (
@@ -33,13 +32,18 @@ const TeamsPage: NextPage<Props> = ({ data }) => {
           key={i}
           onClick={() =>
             cellIndex === 5
-              ? router.push(`/users/${item}`)
+              ? router.push(`/members/${item}`)
               : cellIndex === 9
               ? router.push(`https://github.com/wafflestudio/${item}`)
               : null
           }
         >
-          {item}
+          {cellIndex === 5
+            ? `${
+                memberList.table.rows.find((member) => member.c[3]?.v === item)
+                  ?.c[2]?.v ?? '--------'
+              } (${item})`
+            : item}
           <br />
         </span>
       ));
@@ -50,7 +54,7 @@ const TeamsPage: NextPage<Props> = ({ data }) => {
     <Table>
       <Table.Header>
         <Table.Row>
-          {data.table.cols.map(
+          {teamList.table.cols.map(
             (item, i) =>
               !HIDE_COLUMN_LIST.includes(i) && (
                 <Table.HeaderCell key={i}>{item.label}</Table.HeaderCell>
@@ -60,12 +64,14 @@ const TeamsPage: NextPage<Props> = ({ data }) => {
       </Table.Header>
 
       <Table.Body>
-        {data.table.rows.map((row, rowIndex) => (
+        {teamList.table.rows.map((row, rowIndex) => (
           <Table.Row key={rowIndex}>
             {row.c.map(
               (cell, cellIndex) =>
                 !HIDE_COLUMN_LIST.includes(cellIndex) && (
-                  <Cell key={cellIndex}>{renderCell(cell, cellIndex)}</Cell>
+                  <Table.Cell key={cellIndex}>
+                    {renderCell(cell, cellIndex)}
+                  </Table.Cell>
                 ),
             )}
           </Table.Row>
@@ -76,24 +82,30 @@ const TeamsPage: NextPage<Props> = ({ data }) => {
 };
 
 export async function getServerSideProps() {
-  const res = await axios.get<string>(
-    `https://docs.google.com/spreadsheets/d/${TEAM_LIST_SHEET_KEY}/gviz/tq?`,
+  const teamListResponse = await axios.get<string>(
+    `https://docs.google.com/spreadsheets/d/${process.env.TEAM_LIST_SHEET_KEY}/gviz/tq?`,
   );
 
-  const prefixParsed = res.data.replace(
+  const memberListResponse = await axios.get<string>(
+    `https://docs.google.com/spreadsheets/d/${process.env.MEMBER_LIST_SHEET_KEY}/gviz/tq?`,
+  );
+
+  const tPrefixParsed = teamListResponse.data.replace(
     '/*O_o*/\ngoogle.visualization.Query.setResponse(',
     '',
   );
 
-  const data = JSON.parse(prefixParsed.substr(0, prefixParsed.length - 2));
+  const mPrefixParsed = memberListResponse.data.replace(
+    '/*O_o*/\ngoogle.visualization.Query.setResponse(',
+    '',
+  );
 
-  return { props: { data } };
+  return {
+    props: {
+      teamList: JSON.parse(tPrefixParsed.substr(0, tPrefixParsed.length - 2)),
+      memberList: JSON.parse(mPrefixParsed.substr(0, mPrefixParsed.length - 2)),
+    },
+  };
 }
 
 export default TeamsPage;
-
-// styles
-
-const Cell = styled(Table.Cell)`
-  white-space: pre-wrap;
-`;
