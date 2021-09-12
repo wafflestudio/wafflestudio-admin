@@ -68,7 +68,7 @@ const TeamsPage: NextPage<Props> = ({ teamList, memberList }) => {
 
         <Table.Body>
           {teamList.table.rows.map((row, rowIndex) => (
-            <Table.Row key={rowIndex}>
+            <Table.Row key={rowIndex} disabled={row.c[7]?.v === false}>
               {row.c.map(
                 (cell, cellIndex) =>
                   !HIDE_COLUMN_LIST.includes(cellIndex) && (
