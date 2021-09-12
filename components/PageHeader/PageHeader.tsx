@@ -25,6 +25,7 @@ const PageHeader: React.FC = () => {
         }
         width={40}
         height={40}
+        onClick={() => router.push('/')}
       />
       <Menu>
         <Menu.Item onClick={() => router.push('/teams')}>팀 목록</Menu.Item>

@@ -5,6 +5,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Table } from 'semantic-ui-react';
 
+import PageHeader from '../../components/PageHeader/PageHeader';
 import type { GoogleSheetResponse } from '../../types/GoogleSheetResponse';
 
 interface Props {
@@ -22,31 +23,34 @@ const MembersPage: NextPage<Props> = ({ data }) => {
   };
 
   return (
-    <Table>
-      <Table.Header>
-        <Table.Row>
-          {data.table.cols.map(
-            (item, i) =>
-              !HIDE_COLUMN_LIST.includes(i) && (
-                <Table.HeaderCell key={i}>{item.label}</Table.HeaderCell>
-              ),
-          )}
-        </Table.Row>
-      </Table.Header>
-
-      <Table.Body>
-        {data.table.rows.map((row, rowIndex) => (
-          <Table.Row key={rowIndex}>
-            {row.c.map(
-              (cell, cellIndex) =>
-                !HIDE_COLUMN_LIST.includes(cellIndex) && (
-                  <Table.Cell key={cellIndex}>{renderCell(cell)}</Table.Cell>
+    <>
+      <PageHeader />
+      <Table>
+        <Table.Header>
+          <Table.Row>
+            {data.table.cols.map(
+              (item, i) =>
+                !HIDE_COLUMN_LIST.includes(i) && (
+                  <Table.HeaderCell key={i}>{item.label}</Table.HeaderCell>
                 ),
             )}
           </Table.Row>
-        ))}
-      </Table.Body>
-    </Table>
+        </Table.Header>
+
+        <Table.Body>
+          {data.table.rows.map((row, rowIndex) => (
+            <Table.Row key={rowIndex}>
+              {row.c.map(
+                (cell, cellIndex) =>
+                  !HIDE_COLUMN_LIST.includes(cellIndex) && (
+                    <Table.Cell key={cellIndex}>{renderCell(cell)}</Table.Cell>
+                  ),
+              )}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </>
   );
 };
 
