@@ -24,7 +24,8 @@ const TeamsPage: NextPage<Props> = ({ teamList, memberList }) => {
     cellIndex: number,
   ): JSX.Element => {
     if (cell === null) return <></>;
-    if (!MULTILINE_COLUMN_LIST.includes(cellIndex)) return <>{cell.v}</>;
+    if (!MULTILINE_COLUMN_LIST.includes(cellIndex))
+      return <>{cell.v.toString()}</>;
     const elements = (cell.v as string)
       .replace(/\s/g, '')
       .split(',')
