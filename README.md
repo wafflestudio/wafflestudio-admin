@@ -5,7 +5,8 @@
 ---
 
 # Deployment
-|key | val |
-|---|---|
-| url | [https://wafflestudio-admin.vercel.app/](https://wafflestudio-admin.vercel.app/) |
+
+| key        | val                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| url        | [https://wafflestudio-admin.vercel.app/](https://wafflestudio-admin.vercel.app/)                         |
 | deployment | [![vercel](./assets/powered-by-vercel.svg)](https://vercel.com?utm_source=wafflestudio&utm_campaign=oss) |
