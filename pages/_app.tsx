@@ -1,9 +1,11 @@
-import '../styles/globals.css';
 import React from 'react';
 
 import axios from 'axios';
 import type { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
+
+import '../styles/globals.css';
+import 'semantic-ui-css/semantic.min.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

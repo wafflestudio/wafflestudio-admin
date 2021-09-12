@@ -17,6 +17,5 @@ export type GoogleSheetCol = {
 };
 
 export type GoogleSheetRow = {
-  v: string | boolean;
-  f?: string;
+  c: ({ v: string | boolean; f?: string } | null)[];
 };
